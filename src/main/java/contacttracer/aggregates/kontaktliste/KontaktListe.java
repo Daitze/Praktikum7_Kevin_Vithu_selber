@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.springframework.data.annotation.Id;
 
+
 public class KontaktListe {
 
   @Id

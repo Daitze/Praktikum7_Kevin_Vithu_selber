@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Deprecated(forRemoval = true)
+//@Deprecated(forRemoval = true)
 public @interface Mutable {
 }

@@ -46,9 +46,10 @@ public class Webpage {
   @PostMapping("/liste/{id}")
   public String kontaktpersonHinzufuegen(@PathVariable("id") long id,
                                          Kontaktperson kontaktperson) {
-    KontaktListe liste = repo.findById(id).orElseThrow(() ->
-        new HttpClientErrorException(HttpStatus.NOT_FOUND,
-            "Keine Liste mit id " + id + " vorhanden."));
+//    KontaktListe liste = repo.findById(id).orElseThrow(() ->
+//        new HttpClientErrorException(HttpStatus.NOT_FOUND,
+//            "Keine Liste mit id " + id + " vorhanden."));
+    KontaktListe liste = listen.finde(id);
     liste.addKontakt(kontaktperson);
     repo.save(liste);
     return "redirect:/liste/" + id;

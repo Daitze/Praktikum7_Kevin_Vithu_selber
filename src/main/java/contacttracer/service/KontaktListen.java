@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.groupingBy;
 
 import contacttracer.aggregates.kontaktliste.Index;
 import contacttracer.aggregates.kontaktliste.KontaktListe;
+import contacttracer.controller.Webpage;
 import contacttracer.persistence.KontaktListeRepository;
 import java.time.LocalDate;
 import java.time.Period;
