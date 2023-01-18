@@ -4,9 +4,17 @@ import com.sun.tools.javac.Main;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
+import contacttracer.stereotypes.AggregateRoot;
+import contacttracer.stereotypes.ClassOnly;
+import contacttracer.stereotypes.Wertobjekt;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.Name;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 import static com.tngtech.archunit.lang.conditions.ArchConditions.beAnnotatedWith;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
@@ -21,14 +29,13 @@ public class ArchitectureTest {
     ArchRule noAnnotationDeprecated = noClasses()
             .should().beAnnotatedWith(Deprecated.class);
 
-//    @ArchTest
-//    ArchRule controllerShouldOnlyAccessApplicationService = classes()
-//            .that().resideInAPackage("..controller..")
-//            .should().onlyAccessClassesThat().resideInAPackage("..service..");
+    @ArchTest
+    ArchRule controllerShouldOnlyAccessApplicationService = noClasses()
+            .that().resideInAPackage("..controller..")
+            .should().accessClassesThat().resideInAPackage("..persistence..");
 
 //    @ArchTest
-//    ArchRule onlyKonstruktorInjection = noFields()
-//		.should(beAnnotatedWith("org.springframework.beans.factory.annotation.Autowired"));
+//    ArchRule onlyKonstruktorInjection = fields().should().notBeAnnotatedWith(Inject).andShould().beAnnotatedWith(Autowired.class)
 
     @ArchTest
     ArchRule layerTest = layeredArchitecture()
@@ -36,9 +43,20 @@ public class ArchitectureTest {
             .layer("controller").definedBy("..controller..")
             .layer("applicationService").definedBy("..service..")
             .layer("persistence").definedBy("..persistence..")
+            .layer("aggregate").definedBy("..aggregates.kontaktliste..")
             .whereLayer("controller").mayNotBeAccessedByAnyLayer()
-            .whereLayer("applicationService").mayOnlyAccessLayers("persistence")
             .whereLayer("applicationService").mayOnlyBeAccessedByLayers("controller")
             .whereLayer("persistence").mayOnlyBeAccessedByLayers("applicationService")
-            .whereLayer("persistence").mayNotAccessAnyLayer();
+            .whereLayer("aggregate").mayOnlyBeAccessedByLayers("persistence","applicationService");
+    @ArchTest
+    ArchRule stereoType = classes().should().notBeAnnotatedWith(Configuration.class);
+    @ArchTest
+    ArchRule AggregateRootisAnnotated = fields()
+            .that().areAnnotatedWith(Id.class)
+            .should().beDeclaredInClassesThat().areAnnotatedWith(AggregateRoot.class)
+            .orShould().beDeclaredInClassesThat().areAnnotatedWith(Wertobjekt.class);
+    @ArchTest
+    ArchRule AllConstructorArePublicifNotClassOnly = constructors().that().areAnnotatedWith(ClassOnly.class).should().bePrivate();
+    @ArchTest
+    ArchRule AllMethodsArePublicifNotClassOnly = methods().that().areAnnotatedWith(ClassOnly.class).should().bePrivate();
 }

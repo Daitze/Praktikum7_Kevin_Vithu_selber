@@ -1,5 +1,6 @@
 package contacttracer.aggregates.kontaktliste;
 
+import contacttracer.stereotypes.AggregateRoot;
 import contacttracer.stereotypes.ClassOnly;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,9 +8,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.HashSet;
 import java.util.Set;
+
+import contacttracer.stereotypes.Wertobjekt;
 import org.springframework.data.annotation.Id;
 
-
+@Wertobjekt
 public class KontaktListe {
 
   @Id

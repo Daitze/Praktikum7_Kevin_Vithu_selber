@@ -6,14 +6,12 @@ import static java.util.stream.Collectors.groupingBy;
 
 import contacttracer.aggregates.kontaktliste.Index;
 import contacttracer.aggregates.kontaktliste.KontaktListe;
-import contacttracer.controller.Webpage;
+import contacttracer.aggregates.kontaktliste.Kontaktperson;
 import contacttracer.persistence.KontaktListeRepository;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -55,4 +53,15 @@ public class KontaktListen {
     liste.setIndex(new Index(nachname, vorname, LocalDate.now()));
     repo.save(liste);
   }
+  public void kontaktEntfernen(long id, Kontaktperson kontaktperson){
+    KontaktListe liste = finde(id);
+    liste.removeKontakt(kontaktperson);
+    repo.save(liste);
+  }
+  public void kontakthinzufuegen(long id, Kontaktperson kontaktperson){
+    KontaktListe liste = finde(id);
+    liste.addKontakt(kontaktperson);
+    repo.save(liste);
+  }
+
 }

@@ -1,20 +1,16 @@
 package contacttracer.controller;
 
-import contacttracer.aggregates.kontaktliste.Index;
 import contacttracer.aggregates.kontaktliste.KontaktListe;
 import contacttracer.aggregates.kontaktliste.Kontaktperson;
-import contacttracer.persistence.KontaktListeRepository;
 import contacttracer.service.KontaktListen;
-import java.time.LocalDate;
+
 import java.util.SortedMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Controller
 public class Webpage {
@@ -22,12 +18,13 @@ public class Webpage {
   @Autowired
   KontaktListen listen;
 
-  @Autowired
-  KontaktListeRepository repo;
+//  @Autowired
+//  KontaktListeRepository repo;
 
   @GetMapping("/")
   public String index(Model model) {
     model.addAttribute("listen", listen.alle());
+
     return "index";
   }
 
@@ -49,20 +46,23 @@ public class Webpage {
 //    KontaktListe liste = repo.findById(id).orElseThrow(() ->
 //        new HttpClientErrorException(HttpStatus.NOT_FOUND,
 //            "Keine Liste mit id " + id + " vorhanden."));
-    KontaktListe liste = listen.finde(id);
-    liste.addKontakt(kontaktperson);
-    repo.save(liste);
+//    KontaktListe liste = listen.finde(id);
+//    liste.addKontakt(kontaktperson);
+//    listen.createListe(kontaktperson.nachname(),kontaktperson.vorname());
+    listen.kontakthinzufuegen(id, kontaktperson);
     return "redirect:/liste/" + id;
   }
 
   @PostMapping("/remove/from/{id}")
   public String kontaktpersonEntfernen(@PathVariable("id") long id,
                                        Kontaktperson kontaktperson) {
-    KontaktListe liste = repo.findById(id).orElseThrow(() ->
-        new HttpClientErrorException(HttpStatus.NOT_FOUND,
-            "Keine Liste mit id " + id + " vorhanden."));
-    liste.removeKontakt(kontaktperson);
-    repo.save(liste);
+//    KontaktListe liste = repo.findById(id).orElseThrow(() ->
+//        new HttpClientErrorException(HttpStatus.NOT_FOUND,
+//            "Keine Liste mit id " + id + " vorhanden."));
+//    var liste = listen.finde(id);
+//    liste.removeKontakt(kontaktperson);
+//    listen.createListe(kontaktperson.nachname(),kontaktperson.vorname());
+    listen.kontaktEntfernen(id, kontaktperson);
     return "redirect:/liste/" + id;
   }
 
